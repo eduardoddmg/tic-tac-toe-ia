@@ -1,36 +1,94 @@
-print('funcionou')
+print("funcionou")
 
-array = [['#', '#', '#'], ['#', '#', '#'], ['#', '#', '#']]
+array = [["#", "#", "#"], ["#", "#", "#"], ["#", "#", "#"]]
 arrayBola = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 arrayX = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
+possibilidadesX = []
+possibilidadesO = []
+
+pertoGanharX = []
+pertoGanharO = []
+
+posicoes = []
+jogadas = ['11', '00', '02', '22', '20']
+
 def scanBola():
-    print('digite a posicao do valor que voce quer inserir a bola O')
+    print("digite a posicao do valor que voce quer inserir a bola O")
     n1 = int(input())
     n2 = int(input())
-    if array[n1][n2] == '#':
-        array[n1][n2] = 'O'
+    if array[n1][n2] == "#":
+        array[n1][n2] = "O"
         arrayBola[n1][n2] = 1
     else:
-        print('esse lugar ja tem elemento')
+        print("esse lugar ja tem elemento")
         scanBola()
     
 
 def scanX():
-    print('digite a posicao do valor que voce quer inserir a bola X')
-    n1 = int(input())
-    n2 = int(input())
-    if array[n1][n2] == '#':
-        array[n1][n2] = 'X'
-        arrayX[n1][n2] = 1
-    else:
-        print('esse lugar ja tem elemento')
-        scanX()
-    
-    
+    n1 = int(jogadas[0][0])
+    n2 = int(jogadas[0][1])
+    array[n1][n2] = 'X'
+    jogadas.pop(0)
+    arrayX[n1][n2] = 1
+
+def verificarJogadas():
+    for i in jogadas:
+        if array[int(i[0])][int(i[1])] != '#':
+            jogadas.remove(i)
+
+def prestesGanharX():
+    pertoGanharX.clear()
+    for i in posicoes:
+        hashtag = 0
+        for j in i:
+            if j == '#':
+                hashtag = 1
+        if hashtag == 1:
+            index = i.index('#')
+        contador = 0
+        for j in i:
+            if j == 'X':
+                contador+=1
+        if contador == 2 and hashtag == 1:
+            value = i[index+3]
+            pertoGanharX.append([i[0], i[1], i[2], array[int(value[0])][int(value[1])]])
+            jogadas.insert(0, value)
+
+def prestesGanharO():
+    pertoGanharO.clear()
+    for i in posicoes:
+        hashtag = 0 
+        for j in i:
+            if j == '#':
+                hashtag = 1
+        if hashtag == 1:
+            index = i.index('#')
+        contador = 0
+        for j in i:
+            if j == 'O':
+                contador+=1
+        if contador == 2 and hashtag == 1:
+            value = i[index+3]
+            pertoGanharO.append([i[0], i[1], i[2], array[int(value[0])][int(value[1])]])
+            jogadas.insert(0, value)
+
+def colocarPosicao():
+    posicoes.clear()
+    posicoes.append([array[0][0], array[1][0], array[2][0], '00', '10', '20'])
+    posicoes.append([array[0][1], array[1][1], array[2][1], '01', '11', '21'])
+    posicoes.append([array[0][2], array[1][2], array[2][2], '02', '12', '22'])
+
+    posicoes.append([array[0][0], array[0][1], array[0][2], '00', '01', '02'])
+    posicoes.append([array[1][0], array[1][1], array[1][2], '10', '11', '12'])
+    posicoes.append([array[2][0], array[2][1], array[2][2], '20', '21', '22'])
+
+    posicoes.append([array[0][0], array[1][1], array[2][2], '00', '11', '22'])
+    posicoes.append([array[0][2], array[1][1], array[2][0], '02', '11', '20'])
+
 def printar():
     for fileira in array:
-        print(fileira[0], '|', fileira[1], '|', fileira[2])
+        print(fileira[0], "|", fileira[1], "|", fileira[2])
 
 def verificar(list):
     if list[0][0] and list[1][0] and list[2][0]:
@@ -50,16 +108,22 @@ def verificar(list):
     elif list[0][2] and list[1][1] and list[2][0]:
         return True
 
-for i in range(9):
+while arrayBola.count(1) + arrayX.count(1) < 9:
     scanBola()
-    printar()
+    colocarPosicao()
+    verificarJogadas()
+    prestesGanharO()
+    prestesGanharX()
     if verificar(arrayBola):
-        print('BOLA GANHOU')
+        print("BOLA GANHOU")
         break
     scanX()
     printar()
+    colocarPosicao()
     if verificar(arrayX):
-        print('X GANHOU')
+        print("X GANHOU")
         break
+    jogadas = list(set(jogadas))
+    verificarJogadas()
 
 
