@@ -1,4 +1,4 @@
-print("funcionou")
+contadorJogadas = 0
 
 array = [["#", "#", "#"], ["#", "#", "#"], ["#", "#", "#"]]
 arrayBola = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
@@ -107,23 +107,74 @@ def verificar(list):
         return True
     elif list[0][2] and list[1][1] and list[2][0]:
         return True
+    return False
 
-while arrayBola.count(1) + arrayX.count(1) < 9:
-    scanBola()
-    colocarPosicao()
-    verificarJogadas()
-    prestesGanharO()
-    prestesGanharX()
-    if verificar(arrayBola):
-        print("BOLA GANHOU")
-        break
-    scanX()
-    printar()
-    colocarPosicao()
-    if verificar(arrayX):
-        print("X GANHOU")
-        break
-    jogadas = list(set(jogadas))
-    verificarJogadas()
+def computadorComeca(jogadas):
+    contadorJogadas = 0
+    while contadorJogadas < 9:
+        scanX()
+        if contadorJogadas == 0:
+            printar()
+        contadorJogadas = contadorJogadas + 1
+        colocarPosicao()
+        if verificar(arrayX):
+            printar()
+            print("X GANHOU")
+            break
+        scanBola()
+        contadorJogadas = contadorJogadas + 1
+        if (contadorJogadas == 9):
+            if verificar(arrayX) is False and verificar(arrayBola) is False:
+                print('deu velha')
+            printar()
+            break
+        colocarPosicao()
+        verificarJogadas()
+        prestesGanharO()
+        prestesGanharX()
+        if verificar(arrayBola):
+            printar()
+            print("BOLA GANHOU")
+            break
+        printar()
+        jogadas = list(set(jogadas))
+        verificarJogadas()
 
+def jogadorComeca(jogadas):
+    contadorJogadas = 0
+    while contadorJogadas < 9:
+        scanBola()
+        contadorJogadas = contadorJogadas + 1
+        if (contadorJogadas == 9):
+            if verificar(arrayX) is False and verificar(arrayBola) is False:
+                print('deu velha')
+            printar()
+            break
+        colocarPosicao()
+        verificarJogadas()
+        prestesGanharO()
+        prestesGanharX()
+        if verificar(arrayBola):
+            print("BOLA GANHOU")
+            printar()
+            break
+        scanX()
+        contadorJogadas = contadorJogadas + 1
+        printar()
+        colocarPosicao()
+        if verificar(arrayX):
+            print("X GANHOU")
+            printar()
+            break
+        jogadas = list(set(jogadas))
+        verificarJogadas()
 
+def menu(jogadas):
+    print('[1]: Jogador comeca\n[2]: Computador comeca')
+    val = int(input())
+    if val == 1:
+        jogadorComeca(jogadas)
+    elif val == 2:
+        computadorComeca(jogadas)
+
+menu(jogadas)
